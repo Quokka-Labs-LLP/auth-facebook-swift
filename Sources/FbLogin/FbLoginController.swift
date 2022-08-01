@@ -27,14 +27,14 @@ public class FbLoginController: UIViewController {
                 self.delegate?.fbLoginFail(error: FbAuthError(rawValue: error.localizedDescription) ?? .unknown)
             } else {
                 guard let result = result else {
-                    self.delegate?.fbLoginFail(error: .FacebookDeclinedPermissions)
+                    self.delegate?.fbLoginFail(error: .facebookDeclinedPermissions)
                     return
                 }
                 if result.isCancelled {
-                    self.delegate?.fbLoginCancel(error: .FacebookLoginCancelled)
+                    self.delegate?.fbLoginCancel(error: .facebookLoginCancelled)
                 } else {
                     guard let token = result.token?.tokenString else {
-                        self.delegate?.fbLoginFail(error: .TokenNotFound)
+                        self.delegate?.fbLoginFail(error: .tokenNotFound)
                         return
                     }
                     self.delegate?.fbLoginAccess(status: true)
@@ -51,7 +51,7 @@ public class FbLoginController: UIViewController {
                 self.delegate?.fbLoginFail(error: FbAuthError(rawValue: error.localizedDescription) ?? .unknown)
             } else {
                 guard let userData = res as? [String: Any] else {
-                    self.delegate?.fbLoginFail(error: .UserDataNotFound)
+                    self.delegate?.fbLoginFail(error: .userDataNotFound)
                     return
                 }
                 self.delegate?.fbLoginSuccess(token: token, userData: userData)

@@ -2,19 +2,19 @@ import UIKit
 import FacebookLogin
 import AuthenticationServices
  
-public protocol FbLoginStatusProtocol {
+public protocol FbLoginStatusProtocol: AnyObject {
     func fbLoginSuccess(token: String, userData : [String: Any])
-    func fbLoginFail(error: String)
-    func fbLoginCancel(error: String)
+    func fbLoginFail(error: FbAuthError)
+    func fbLoginCancel(error: FbAuthError)
     func fbLoginAccess(status: Bool)
 }
 
 public class FbLoginController: UIViewController {
-    private var delegate: FbLoginStatusProtocol?
+    private weak var delegate: FbLoginStatusProtocol?
     
-    public init(delegate: FbLoginStatusProtocol?) {
-        self.delegate = delegate
+    public init(delegate: FbLoginStatusProtocol) {
         super.init(nibName: nil, bundle: nil)
+        self.delegate = delegate
     }
     
     required init?(coder: NSCoder) {
@@ -24,17 +24,17 @@ public class FbLoginController: UIViewController {
     public func beginFbLogin() {
         LoginManager.init().logIn(permissions: [kEmailPermission, kProfilePermission], from: self) { result, error in
             if let error =  error {
-                self.delegate?.fbLoginFail(error: error.localizedDescription)
+                self.delegate?.fbLoginFail(error: FbAuthError(rawValue: error.localizedDescription) ?? .unknown)
             } else {
                 guard let result = result else {
-                    self.delegate?.fbLoginFail(error: kFacebookDeclinedPermissions)
+                    self.delegate?.fbLoginFail(error: .FacebookDeclinedPermissions)
                     return
                 }
                 if result.isCancelled {
-                    self.delegate?.fbLoginCancel(error: kFacebookLoginHasBeenCancelled)
+                    self.delegate?.fbLoginCancel(error: .FacebookLoginCancelled)
                 } else {
                     guard let token = result.token?.tokenString else {
-                        self.delegate?.fbLoginFail(error: kTokenNotFound)
+                        self.delegate?.fbLoginFail(error: .TokenNotFound)
                         return
                     }
                     self.delegate?.fbLoginAccess(status: true)
@@ -48,10 +48,10 @@ public class FbLoginController: UIViewController {
     private func fetchUserProfile(token: String) {
         GraphRequest(graphPath: "/me", parameters: [kParamaterFields: kFieldsName]).start { connections, res, error in
             if let error = error {
-                self.delegate?.fbLoginFail(error: error.localizedDescription)
+                self.delegate?.fbLoginFail(error: FbAuthError(rawValue: error.localizedDescription) ?? .unknown)
             } else {
                 guard let userData = res as? [String: Any] else {
-                    self.delegate?.fbLoginFail(error: kUserDataNotFound)
+                    self.delegate?.fbLoginFail(error: .UserDataNotFound)
                     return
                 }
                 self.delegate?.fbLoginSuccess(token: token, userData: userData)

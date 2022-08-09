@@ -6,10 +6,10 @@ let kFieldsName = "id, name, email"
 
 
 //MARK: some constant errors
-public enum FbAuthError: String {
+public enum FbAuthError {
     case facebookDeclinedPermissions
     case tokenNotFound
     case userDataNotFound
     case facebookLoginCancelled
-    case unknown
+    case unknown(String)
 }

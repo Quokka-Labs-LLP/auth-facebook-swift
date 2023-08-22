@@ -1,0 +1,23 @@
+{
+  "pins" : [
+    {
+      "identity" : "auth-facebook-swift",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Quokka-Labs-LLP/auth-facebook-swift.git",
+      "state" : {
+        "branch" : "version-update",
+        "revision" : "0df10a2341ec85c99be891143844be6f6f966c4b"
+      }
+    },
+    {
+      "identity" : "facebook-ios-sdk",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/facebook/facebook-ios-sdk",
+      "state" : {
+        "branch" : "main",
+        "revision" : "f1a48d9d2b9ae53f36a07ae055ecfb04ca1c715e"
+      }
+    }
+  ],
+  "version" : 2
+}
